@@ -6,6 +6,7 @@ const logEvents = require("./middleware/logger");
 
 const cors = require("cors");
 const corsOptions = require("./config/corsOptions");
+app.use(cors());
 
 const dbConnect = require("./config/dbConn");
 const mongoose = require("mongoose");
@@ -21,8 +22,6 @@ app.use((req, res, next) => {
   logEvents(`${req.method}\t${req.url}\t${req.headers.origin}`);
   next();
 });
-
-app.use(cors(corsOptions));
 
 app.use(express.json({ limit: "50mb" }));
 app.use(express.json());
