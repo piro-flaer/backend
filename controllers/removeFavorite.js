@@ -2,22 +2,24 @@ const userFavoritesModel = require("../models/userFavoritesModel");
 
 const logEvents = require("../middleware/logger");
 
-const removeFavorites = async (req, res) => {
+const removeFavorite = async (req, res) => {
   const { userName, favoriteItem } = req.body;
 
   const userFavoritesObject = await userFavoritesModel.findOne({ userName });
 
-  const index = userFavoritesObject.favorites.indexof(favoriteItem);
-  userFavoritesObject.favorites.splice(index, 1);
+  const favoriteList = userFavoritesObject.favorites;
+  const index = favoriteList.indexOf(favoriteItem);
+  favoriteList.splice(index, 1);
+  userFavoritesObject.favorites = favoriteList;
 
   const userFavoritesUpdated = await userFavoritesObject.save();
 
   if (userFavoritesUpdated) {
     logEvents("Favorite Removed");
-    res.status(200).json({ message: "Favorite Removed" });
+    res.sendStatus(200);
   } else {
-    res.status(400).json({ message: "Favorite not Removed" });
+    res.sendStatus(400);
   }
 };
 
-module.exports = removeFavorites;
+module.exports = removeFavorite;
