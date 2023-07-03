@@ -31,7 +31,7 @@ const refreshController = async (req, res) => {
           UserInfo: { userName: foundUser.userName },
         },
         process.env.ACCESS_TOKEN_SECRET,
-        { expiresIn: "15s" }
+        { expiresIn: "15m" }
       );
 
       res.json({ accessToken });
