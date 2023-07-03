@@ -1,6 +1,6 @@
 const userIDModel = require("../models/userIDModel");
 
-const bcrypt = require("bcrypt");
+const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 
 const loginController = async (req, res) => {
@@ -24,7 +24,7 @@ const loginController = async (req, res) => {
       },
     },
     process.env.ACCESS_TOKEN_SECRET,
-    { expiresIn: "15m" }
+    { expiresIn: "7d" }
   );
 
   const refreshToken = jwt.sign(
@@ -42,7 +42,7 @@ const loginController = async (req, res) => {
     maxAge: 7 * 24 * 60 * 60 * 1000,
   });
 
-  res.status(201).json({ accessToken });
+  res.status(201).json(accessToken);
 };
 
 module.exports = loginController;
