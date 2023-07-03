@@ -20,6 +20,7 @@ dbConnect();
 
 app.use((req, res, next) => {
   logEvents(`${req.method}\t${req.url}\t${req.headers.origin}`);
+  console.log(`${req.method}\t${req.url}\t${req.headers.origin}`)
   next();
 });
 
@@ -44,6 +45,7 @@ app.all("*", (req, res) => {
 
 mongoose.connection.once("open", () => {
   logEvents("Connected to MongoDB");
+  console.log("Connected to MongoDB")
 
   app.listen(PORT, () => {
     logEvents(`Server running on port ${PORT}`);
