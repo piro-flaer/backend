@@ -1,13 +1,11 @@
-const userDetailsModel = require('../models/userDetailsModel')
-const userPreferencesModel = require('../models/userPreferencesModel')
+const userDetailsModel = require("../models/userDetailsModel");
 
-const getUserDetails = async (req,res) => {
-    const userName = req.params.userName;
+const getUserDetails = async (req, res) => {
+  const { userName } = req.query;
 
-    const userDetails = await userDetailsModel.findOne({ userName }).lean();
-    const userPreferences = await userPreferencesModel.findOne({ userName }).lean();
+  const userDetails = await userDetailsModel.findOne({ userName }).lean();
 
-    res.status(200).json({userDetails,userPreferences});
-}
+  res.status(200).json(userDetails);
+};
 
-module.exports = getUserDetails
+module.exports = getUserDetails;
