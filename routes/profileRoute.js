@@ -5,10 +5,6 @@ const getUserDetails = require("../controllers/getUserDetails");
 const createUser = require("../controllers/createUser");
 const updateUserDetails = require("../controllers/updateUserDetails");
 
-router
-  .route("/:userName?")
-  .get(getUserDetails)
-  .post(createUser)
-  .patch(updateUserDetails);
+router.route("/").get(getUserDetails).post(createUser).put(updateUserDetails);
 
 module.exports = router;
