@@ -1,48 +1,58 @@
-const userDetailsModel = require('../models/userDetailsModel')
-const userIDModel = require('../models/userIDModel')
-const userPreferencesModel = require('../models/userPreferencesModel')
+const userDetailsModel = require("../models/userDetailsModel");
+const userIDModel = require("../models/userIDModel");
 
-const bcrypt = require('bcrypt')
+const bcrypt = require("bcryptjs");
 
-const logEvents = require('../middleware/logger')
+const logEvents = require("../middleware/logger");
 
+const updateUser = async (req, res) => {
+  const { id, firstName, lastName, userName, email, password, profile } =
+    req.body;
 
-const updateUser = async (req,res) => {
-    const { id, firstName, lastName, userName, email, password, difficulty, state, season } = req.body;
+  const duplicateUserName = await userDetailsModel.find({ userName }).lean();
+  if (
+    duplicateUserName.length > 0 &&
+    duplicateUserName.some((user) => user._id.toString() !== id)
+  ) {
+    logEvents(`User not updated: Username already exists!`);
+    return res
+      .status(409)
+      .json({ message: "Username Already Exists! Please Choose Another" });
+  }
 
-    const duplicate = await userDetailsModel.find({userName}).lean()
-    if (duplicate.length > 0 && duplicate.some(user => user._id.toString() !== id)) {
-        logEvents(`User not updated: Username already exists!`);
-        return res.status(409).json({ message: 'Username already exists!' })
-    }
+  const duplicateEmail = await userDetailsModel.find({ email }).lean();
+  if (
+    duplicateEmail.length > 0 &&
+    duplicateEmail.some((user) => user._id.toString() !== id)
+  ) {
+    logEvents(`User not updated: Username already exists!`);
+    return res
+      .status(409)
+      .json({ message: "EMail Already Exists! Please Choose Another" });
+  }
 
-    const userDetailsObject = await userDetailsModel.findOne({userName})
-    const userIDObject = await userIDModel.findOne({userName})
-    const userPreferencesObject = await userPreferencesModel.findOne({userName})
+  const userDetailsObject = await userDetailsModel.findOne({ userName });
+  const userIDObject = await userIDModel.findOne({ userName });
 
-    userDetailsObject.firstName = firstName
-    userDetailsObject.lastName = lastName
-    userDetailsObject.userName = userName
-    userDetailsObject.email = email
-    userPreferencesObject.userName = userName
-    userPreferencesObject.difficulty = difficulty
-    userPreferencesObject.state = state
-    userPreferencesObject.season = season
-    userIDObject.userName = userName
-    if(password){
-        userIDObject.password = await bcrypt.hash(password, 10)
-    }
-    
-    const userDetailUpdated = await userDetailsObject.save()
-    const userIDUpdated = await userIDObject.save()
-    const userPreferencesUpdated = await userPreferencesObject.save()
+  userDetailsObject.firstName = firstName;
+  userDetailsObject.lastName = lastName;
+  userDetailsObject.userName = userName;
+  userDetailsObject.email = email;
+  userDetailsObject.profile = profile;
+  userIDObject.userName = userName;
+  if (password) {
+    userIDObject.password = await bcrypt.hash(password, 10);
+  }
 
-    if (userDetailUpdated && userIDUpdated && userPreferencesUpdated) { 
-        logEvents(`User updated`);
-        res.status(200).json({ message: `User updated` })
-    } else {
-        res.status(400).json({ message: 'User not updated' })
-    }
-}
+  const userDetailUpdated = await userDetailsObject.save();
+  const userIDUpdated = await userIDObject.save();
 
-module.exports = updateUser
+  if (userDetailUpdated && userIDUpdated) {
+    logEvents(`User updated`);
+    res.sendStatus(200);
+  } else {
+    res.sendStatus(400);
+  }
+};
+
+module.exports = updateUser;
