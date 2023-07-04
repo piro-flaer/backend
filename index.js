@@ -20,35 +20,23 @@ dbConnect();
 
 app.use((req, res, next) => {
   logEvents(`${req.method}\t${req.url}\t${req.headers.origin}`);
-  console.log(`00 ${req.method}\t${req.url}\t${req.headers.origin}`);
   next();
 });
 
 app.use(express.json({ limit: "50mb" }));
 app.use(express.json());
-const test01 = require("./routes/root");
-app.use("/", test01);
-console.log("01", test01);
 
-const test02 = require("./routes/trekListRoute");
-app.use("/trekList", test02);
-console.log("02", test02);
+app.use("/", require("./routes/root"));
 
-const test03 = require("./routes/authRoute");
-app.use("/auth", test03);
-console.log("03", test03);
+app.use("/trekList", require("./routes/trekListRoute"));
 
-const test04 = require("./routes/profileRoute");
-app.use("/profile", test04);
-console.log("04", test04);
+app.use("/auth", require("./routes/authRoute"));
 
-const test05 = require("./routes/preferencesRoute");
-app.use("/preferences", test05);
-console.log("05", test05);
+app.use("/profile", require("./routes/profileRoute"));
 
-const test06 = require("./routes/favoriteRoute");
-app.use("/favorite", test06);
-console.log("06", test06);
+app.use("/preferences", require("./routes/preferencesRoute"));
+
+app.use("/favorite", require("./routes/favoriteRoute"));
 
 app.all("*", (req, res) => {
   res.sendStatus(404);
@@ -56,7 +44,6 @@ app.all("*", (req, res) => {
 
 mongoose.connection.once("open", () => {
   logEvents("Connected to MongoDB");
-  console.log("Connected to MongoDB");
 
   app.listen(PORT, () => {
     logEvents(`Server running on port ${PORT}`);
