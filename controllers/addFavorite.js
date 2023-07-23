@@ -3,7 +3,8 @@ const userFavoritesModel = require("../models/userFavoritesModel");
 const logEvents = require("../middleware/logger");
 
 const addFavorite = async (req, res) => {
-  const { userName, favoriteItem } = req.body;
+  const userName = req.user;
+  const { favoriteItem } = req.body;
 
   const userFavoritesObject = await userFavoritesModel.findOne({ userName });
 
