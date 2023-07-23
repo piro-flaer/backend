@@ -6,8 +6,8 @@ const bcrypt = require("bcryptjs");
 const logEvents = require("../middleware/logger");
 
 const updateUser = async (req, res) => {
-  const { id, firstName, lastName, userName, email, password, profile } =
-    req.body;
+  const userName = req.user;
+  const { id, firstName, lastName, email, password, profile } = req.body;
 
   const duplicateUserName = await userDetailsModel.find({ userName }).lean();
   if (
