@@ -6,10 +6,10 @@ const logEvents = require("./middleware/logger");
 
 const cors = require("cors");
 const corsOptions = require("./config/corsOptions");
-app.use(cors());
 
 const dbConnect = require("./config/dbConn");
 const mongoose = require("mongoose");
+const verifyJWT = require("./middleware/verifyJWT");
 
 cookieParser = require("cookie-parser");
 app.use(cookieParser());
@@ -23,6 +23,8 @@ app.use((req, res, next) => {
   next();
 });
 
+app.use(cors(corsOptions));
+
 app.use(express.json({ limit: "50mb" }));
 app.use(express.json());
 
@@ -30,13 +32,15 @@ app.use("/", require("./routes/root"));
 
 app.use("/trekList", require("./routes/trekListRoute"));
 
+app.use("/create", require("./controllers/createUser"));
+
 app.use("/auth", require("./routes/authRoute"));
 
-app.use("/profile", require("./routes/profileRoute"));
+app.use("/profile", verifyJWT, require("./routes/profileRoute"));
 
-app.use("/preferences", require("./routes/preferencesRoute"));
+app.use("/preferences", verifyJWT, require("./routes/preferencesRoute"));
 
-app.use("/favorite", require("./routes/favoriteRoute"));
+app.use("/favorite", verifyJWT, require("./routes/favoriteRoute"));
 
 app.all("*", (req, res) => {
   res.sendStatus(404);
