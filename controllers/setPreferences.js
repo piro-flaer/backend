@@ -3,7 +3,8 @@ const userPreferencesModel = require("../models/userPreferencesModel");
 const logEvents = require("../middleware/logger");
 
 const setPreferences = async (req, res) => {
-  const { userName, state, season, difficulty } = req.body;
+  const userName = req.user;
+  const { state, season, difficulty } = req.body;
 
   const userPreferencesObject = { userName, state, season, difficulty };
 
