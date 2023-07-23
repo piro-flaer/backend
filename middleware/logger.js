@@ -13,16 +13,17 @@ const logEvents = async (message) => {
   });
   const logItem = `${dateTime}\t${message}\n`;
 
-  await fsPromises
-    .access(path.join(__dirname, "..", "logs"))
-    .catch(async () => {
+  try {
+    if (!fsPromises.access(path.join(__dirname, "..", "logs"))) {
       await fsPromises.mkdir(path.join(__dirname, "..", "logs"));
-    });
-
-  await fsPromises.appendFile(
-    path.join(__dirname, "..", "logs", "logs.log"),
-    logItem
-  );
+    }
+    await fsPromises.appendFile(
+      path.join(__dirname, "..", "logs", "logs.log"),
+      logItem
+    );
+  } catch (err) {
+    console.log(err);
+  }
 };
 
 module.exports = logEvents;
