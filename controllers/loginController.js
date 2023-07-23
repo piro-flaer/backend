@@ -24,7 +24,7 @@ const loginController = async (req, res) => {
       },
     },
     process.env.ACCESS_TOKEN_SECRET,
-    { expiresIn: "7d" }
+    { expiresIn: "1d" }
   );
 
   const refreshToken = jwt.sign(
@@ -42,7 +42,7 @@ const loginController = async (req, res) => {
     maxAge: 7 * 24 * 60 * 60 * 1000,
   });
 
-  res.status(201).json(accessToken);
+  res.status(201).json({ accessToken });
 };
 
 module.exports = loginController;
