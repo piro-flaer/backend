@@ -5,7 +5,8 @@ const bcrypt = require("bcryptjs");
 const logEvents = require("../middleware/logger");
 
 const updatePreferences = async (req, res) => {
-  const { userName, state, season, difficulty } = req.body;
+  const userName = req.user;
+  const { state, season, difficulty } = req.body;
 
   const userPreferencesObject = await userPreferencesModel.findOne({
     userName,
