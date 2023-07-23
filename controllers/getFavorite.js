@@ -2,7 +2,7 @@ const userFavoritesModel = require("../models/userFavoritesModel");
 const trekDetailsModel = require("../models/trekDetailsModel");
 
 const getFavorite = async (req, res) => {
-  const { userName } = req.query;
+  const userName = req.user;
   const userFavorites = await userFavoritesModel.findOne({ userName }).lean();
 
   const trekList = await trekDetailsModel.find().lean();
