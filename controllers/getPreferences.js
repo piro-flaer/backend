@@ -1,7 +1,7 @@
 const userPreferencesModel = require("../models/userPreferencesModel");
 
 const getPreferences = async (req, res) => {
-  const { userName } = req.query;
+  const userName = req.user;
   const userPreferences = await userPreferencesModel
     .findOne({ userName })
     .lean();
